@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3 d-flex">
+    <h1><i class="bi bi-building"></i> Institución {{ institution.name }}</h1>
+  </header>
+
+  <article class="card">
+    <div class="card-header">
+      <h3><i class="bi bi-info-circle-fill"></i> Información de la institución</h3>
+    </div>
+
+    <div class="card-body">
+      <div class="mb-3">
+        <h5><i class="bi bi-geo-alt-fill"></i> Ubicación</h5>
+        <p>{{ institution.location }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-geo-alt-fill"></i> Dirección</h5>
+
+        {% if institution.address %}
+          <input type="hidden" id="address_input" value={{ institution.address }} />
+          <div id="map" style="height: 300px;"></div>
+        {% else %}
+          <p>Sin especificar.</p>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-alarm"></i> Horario de atención al cliente</h5>
+        <p>{{ institution.customer_service_hours }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-globe"></i> Sitio web</h5>
+        <p><a href="{{ institution.web }}" target="_blank">{{ institution.web }}</a></p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-envelope-fill"></i> Información de contacto</h5>
+        <p>{{ institution.contact_info }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi-info-circle"></i> Información adicional</h5>
+        <p>{{ institution.info }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi-info-circle"></i> Palabras clave</h5>
+
+        {% for keyword in institution.keywords.split(',') %}
+          <a href="#" class="keyword-link">{{ keyword }}</a>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <h5>Estado</h5>
+        {% if institution.enable %}
+            <a href="{{ url_for('institutions.deactivate', name=institution.name) }}" class="bi bi-toggle-on text-success fs-4" role="button"></a> Habilitado
+        {% else %}
+            <a href="{{ url_for('institutions.activate', name=institution.name) }}" class="bi bi-toggle-off text-danger fs-4" role="button"></a> Deshabilitado
+        {% endif %}
+
+        <div>
+          <small class="text-muted">Para cambiar el estado, haga click en el botón de toggle.</small>
+        </div>
+      </div>
+
+      <a href="{{ url_for('institutions.edit', name=institution.name) }}" class="btn btn-outline-success" role="button">Editar</a>
+      <a href="{{ url_for('institutions.destroy', name=institution.name) }}" class="btn btn-outline-danger" role="button" onclick="return confirm('¿Está seguro que deseas eliminar la institución {{ institution.name }}?')">Eliminar</a>
+    </div>
+  </article>
+
+{% endblock %}
+
+{% block script %}
+  {% if institution.address %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var addressField = document.getElementById("address_input");
+        var coordinates = addressField.value.split(',');
+
+        // Extrae las coordenadas
+        var storedLatitude = parseFloat(coordinates[0]);
+        var storedLongitude = parseFloat(coordinates[1]);
+
+        if (storedLatitude && storedLongitude) {
+          let map = L.map('map').setView([storedLatitude, storedLongitude], 13);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
+
+          L.marker([storedLatitude, storedLongitude]).addTo(map);
+        }
+      });
+    </script>
+  {% endif %}
+{% endblock %}

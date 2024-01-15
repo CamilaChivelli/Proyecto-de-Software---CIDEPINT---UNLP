@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3 d-flex justify-content-between align-items-center">
+    <h1><i class="bi bi-person-fill"></i> Usuarios</h1>
+    <a href="{{ url_for('institution_users.new', institution_id=institution.id) }}" class="btn btn-primary" role="button"><i class="bi bi-person-plus"></i> Agregar usuario</a>
+  </header>
+
+  <section>
+    {% if pagination.total == 0 %}
+      <div class="card text-center p-5">
+        <div class="card-body">
+          <h5 class="card-title">No se encontraron usuarios asignados a esta institución.</h5>
+        </div>
+      </div>
+
+    {% else %}
+      <section class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Usuario</th>
+              <th scope="col">Email</th>
+              <th scope="col">Rol</th>
+              <th scope="col">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user_role_institution in pagination.items %}
+              <tr>
+                <td>{{ user_role_institution.user.full_name() }}</td>
+                <td>{{ user_role_institution.user.email }}</td>
+                <td>{{ user_role_institution.role.name }}</td>
+                <td>
+                  {% if user_role_institution.user.id != g.current_user.id %}
+                    <a href="{{ url_for('institution_users.edit', institution_id=institution.id, id=user_role_institution.user.id) }}" class="btn btn-outline-success" role="button">Editar</a>
+                  {% endif %}
+                  {% if user_role_institution.user.id != g.current_user.id %}
+                    <a href="{{ url_for('institution_users.destroy', institution_id=institution.id, id=user_role_institution.user.id) }}" class="btn btn-outline-danger" role="button" onclick="return confirm('Estas seguro que deseas eliminar al usuario {{ user_role_institution.user.email }} de la institución?')">Desvincular</a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% from "shared/_pagination.html" import render_pagination %}
+        {{ render_pagination(pagination, "institution_users.index", {"institution_id": institution.id}) }}
+      </section>
+    {% endif %}
+  </section>
+{% endblock %}

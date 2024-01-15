@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <article>
+    <div class="row justify-content-sm-center h-100">
+      <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+        <h1 class="text-center mb-4">Inicio de sesión</h1>
+
+        <div class="card shadow-lg">
+          <div class="card-body p-5">
+            {% if g.configuration.is_on_maintenance %}
+              <h2 class="text-center mb-4" style="color: red;">Sitio en mantenimiento</h1>
+              <p style="color: red; text-align: center;">Disculpen las molestias</p>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('auth.authenticate')}}">
+              {{ form.csrf_token }}
+                <div class="mb-3">
+                  {{ form.email.label(class="form-label") }}
+                  {{ form.email(class="form-control", autofocus=True) }}
+                </div>
+
+                <div class="mb-3">
+                  {{ form.password.label(class="form-label") }}
+                  {{ form.password(class="form-control") }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                  Iniciar sesión
+                </button>
+            </form>
+
+            <form id="google-signin-form" method="POST" action="{{ url_for('auth.login_google')}}">
+              {{ form.csrf_token }}
+
+              <div>
+                <a class="btn btn-outline-dark mt-4 form-control" role="button" style="text-transform:none" onclick="submitForm()">
+                  <img src="{{ url_for('static', filename='images/google-logo.svg') }}" alt="Google logo" class="mb-1 mr-1" width="22px">
+                  Iniciar sesión con Google
+                </a>
+              </div>
+            </form>
+
+            {% if not g.configuration.is_on_maintenance %}
+              <div class="card-footer mt-3 py-3 border-0">
+                <div class="text-center">
+                  ¿No tienes una cuenta? <a href="/register" class="text-dark">Regístrate</a>
+                </div>
+              </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function submitForm() {
+          // Obtén el formulario por su ID
+          const form = document.getElementById('google-signin-form');
+
+          // Envía el formulario
+          form.submit();
+      }
+  </script>
+
+{% endblock %}

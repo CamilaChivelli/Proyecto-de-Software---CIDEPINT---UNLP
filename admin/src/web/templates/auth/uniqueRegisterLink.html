@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <article class="h-100">
+    <div class="container h-100">
+      <div class="row justify-content-sm-center h-100">
+        <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+
+          <h1 class="text-center mb-4">Cambio contraseña</h1>
+
+          <div class="card shadow-lg">
+
+            <div class="card-body p-5">
+                <form method="POST" action={{ url_for('auth.changePassword', random_key=random_key)}}>
+                  {{ form.csrf_token }}
+                  <h1 class="text-center mb-4" style="color: red;">Aclaracion</h1>
+                  <p style="color: red;">Si cambia de password correctamente, este medio ya no será valido si desea hacerlo en un futuro</p>
+                    <div class="mb-3">
+                      {{ form.password.label(class="form-label") }}
+                      {{ form.password(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                      {{ form.password2.label(class="form-label") }}
+                      {{ form.password2(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                      {{ form.email.label(class="form-label") }}
+                      {{ form.email(class="form-control", autofocus=True) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                      Cambiar contraseña
+                    </button>
+                </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% macro render_pagination(pagination, endpoint, kwargs) %}
+  <div class="page-items">
+    {{ pagination.total }} resultados
+  </div>
+
+  {% if pagination.total > 0 and pagination.total > pagination.per_page %}
+  <ul class="pagination justify-content-center">
+
+      {% if pagination.has_prev %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for(endpoint, page=pagination.prev().page, **kwargs) }}">Anterior</a>
+
+        </li>
+      {% endif %}
+
+      <li class="page-item">
+        <a class="page-link active" href="#">
+          {{ pagination.page }}
+        </a>
+      </li>
+
+      {% if pagination.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for(endpoint, page=pagination.next().page, **kwargs) }}">Siguiente</a>
+        </li>
+      {% endif %}
+    </ul>
+  {% endif %}
+{% endmacro %}

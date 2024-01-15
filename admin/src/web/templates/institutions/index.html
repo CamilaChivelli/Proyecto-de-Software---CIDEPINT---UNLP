@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3">
+    <div class="d-flex justify-content-between">
+      <h1><i class="bi bi-building"></i> Instituciones</h1>
+      <a href="{{ url_for('institutions.new') }}" class="btn btn-primary" role="button"><i class="bi bi-building-add"></i> Nueva institución</a>
+    </div>
+  </header>
+
+  <section>
+    <form method="GET" action="{{ url_for('institutions.index') }}">
+      <div class="input-group mb-3 search-bar">
+        {{ form.name(class="form-control", placeholder="Buscar por nombre") }}
+        {{ form.enable(class="form-control") }}
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-search"><i class="bi bi-search"></i></button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section >
+    <table class="table table-striped align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Ubicación</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for institution in pagination.items %}
+          <tr>
+            <td>{{ institution.name }}</td>
+            <td>{{ institution.location }}</td>
+            <td>
+              {% if institution.enable %}
+                <i class="bi bi-check-circle-fill text-success"></i> Habilitado
+              {% else %}
+                <i class="bi bi-x-circle-fill text-danger"></i> Deshabilitado
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('institutions.show', name=institution.name) }}" class="btn btn-success" role="button">Ver</a>
+              <a href="{{ url_for('institutions.edit', name=institution.name) }}" class="btn btn-outline-success" role="button">Editar</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  {% from "shared/_pagination.html" import render_pagination %}
+  {{ render_pagination(pagination, "institutions.index", form.data) }}
+
+{% endblock %}

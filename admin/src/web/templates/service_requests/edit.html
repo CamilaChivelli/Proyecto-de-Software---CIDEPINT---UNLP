@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3 d-flex">
+    <h1><i class="bi bi-file-earmark-text"></i> Editar solicitud de servicio</h1>
+  </header>
+
+  <article class="card">
+    <section class="card-body">
+      {% for field, errors in form.errors.items() %}
+        <div class="alert alert-danger" role="alert">
+          {{ form[field].label }}: {{ ", ".join(errors) }}
+        </div>
+      {% endfor %}
+
+      <form method="POST" action="{{ url_for('service_requests.update', id=request.id) }}">
+        {{ form.csrf_token }}
+
+        <div class="form-group mb-3">
+          {{ form.status.label(class="form-control-label") }}
+          {{ form.status(class="form-select form-control", value=request.status) }}
+        </div>
+
+        <div class="mb-3">
+          <div class="form-text">Observaciones de la institución</div>
+          {{ form.institution_observation(class="form-control", value=request.institution_observation) }}
+        </div>
+
+        <button type="submit" class="btn btn-success">
+          Actualizar solicitud de servicio
+        </button>
+
+        <a href="{{ url_for('service_requests.index') }}" class="btn btn-outline-dark" role="button">
+          Cancelar
+        </a>
+      </form>
+    </section>
+  </article>
+{% endblock %}

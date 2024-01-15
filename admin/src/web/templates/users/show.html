@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3 d-flex justify-content-between">
+    <h1><i class="bi bi-person-fill"></i>Usuario</h1>
+  </header>
+
+  <article class="card mb-4">
+    <div class="card-header">
+      <h3><i class="bi bi-info-circle-fill"></i> Información del usuario</h3>
+    </div>
+
+    <div class="card-body">
+      <div class="mb-3">
+        <h5>Nombre y apellido</h5>
+        <p>{{ user.full_name() }} </p>
+      </div>
+
+      <div class="mb-3">
+        <h5>Email</h5>
+        <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+      </div>
+
+      <div class="mb-3">
+        <h5>Estado</h5>
+        <p>
+          {% if user.active %}
+            <i class="bi bi-check-circle-fill text-success"></i> Activo
+          {% else %}
+            <i class="bi bi-x-circle-fill text-danger"></i> Bloqueado
+          {% endif %}
+        </p>
+      </div>
+
+      <a href="{{ url_for('users.edit', id=user.id) }}" class="btn btn-outline-success" role="button">Editar</a>
+      <a href="{{ url_for('users.destroy', id=user.id) }}" class="btn btn-outline-danger" role="button" onclick="return confirm('¿Estás seguro que deseas eliminar al usuario {{ user.email }}?')">Eliminar</a>
+    </div>
+  </article>
+
+  <article class="card mb-4">
+    <div class="card-header">
+      <h3><i class="bi bi-building"></i> Instituciones asociadas</h3>
+    </div>
+
+    <div class="card-body">
+      {% if pagination.total == 0 %}
+        <div class="text-center p-5">
+          <h5 class="card-title">No se encontraron instituciones asociadas a este usuario.</h5>
+        </div>
+      {% else %}
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Rol</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user_role_institution in pagination.items %}
+              <tr class="align-middle">
+                <td>{{ user_role_institution.institution.name }}</td>
+                <td>{{ user_role_institution.role.name }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% from "shared/_pagination.html" import render_pagination %}
+        {{ render_pagination(pagination, "users.show", {"id": user.id}) }}
+      {% endif %}
+    </div>
+  </article>
+
+{% endblock %}

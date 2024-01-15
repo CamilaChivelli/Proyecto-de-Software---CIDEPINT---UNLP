@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3 d-flex">
+    <h1><i class="bi bi-person-fill"></i> Agregar usuario en la institución</h1>
+  </header>
+
+  {% if user_selection %}
+    <section class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Usuario</th>
+            <th scope="col">Email</th>
+            <th scope="col">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in pagination %}
+            <tr>
+              <td>{{ user.full_name() }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <a href="{{ url_for('institution_users.new', institution_id=institution.id, id=user.id) }}" class="btn btn-success" role="button">Agregar</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% from "shared/_pagination.html" import render_pagination %}
+      {{ render_pagination(pagination, "institution_users.new", {"institution_id": institution.id}) }}
+    </section>
+
+    <a href={{ url_for('institution_users.index', institution_id=institution.id) }} class="btn btn-outline-dark btn-form">Volver</a>
+  </section>
+
+  {% else %}
+    <article class="card mb-4">
+      <div class="card-body">
+        <div class="mb-3">
+          <h5><i class="bi bi-person-fill"></i> Apellido y nombre</h5>
+          <p>{{ user.full_name() }}</p>
+        </div>
+
+        <div class="mb-3">
+          <h5><i class="bi bi-envelope-fill"></i> Email</h5>
+          <p>{{ user.email }}</p>
+        </div>
+
+        {% for field, errors in form.errors.items() %}
+          <div class="alert alert-danger" role="alert">
+            {{ form[field].label }}: {{ ", ".join(errors) }}
+          </div>
+        {% endfor %}
+
+        <form method="POST" action="{{ url_for('institution_users.create', institution_id=institution.id) }}">
+          {{ form.csrf_token }}
+
+          <div class="mb-3">
+            {{ form.user_id(value=user.id) }}
+            {{ form.institution_id(value=institution.id) }}
+          </div>
+
+          <div class="mb-3">
+            <label for="role_id" class="form-label">Rol</label>
+            {{ form.role_id(class="form-control") }}
+          </div>
+
+          <button type="submit" class="btn btn-success">Agregar usuario</button>
+          <a href="{{ url_for('institution_users.index', institution_id=institution.id) }}" class="btn btn-outline-dark" role="button">Cancelar</a>
+        </form>
+      </div>
+    </article>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3 d-flex">
+    <h1><i class="bi bi-stack"></i> Servicio {{ service.name }}</h1>
+  </header>
+
+  <article class="card">
+    <div class="card-header">
+      <h3><i class="bi bi-info-circle-fill"></i> Información del servicio</h3>
+    </div>
+
+    <div class="card-body">
+      <div class="mb-3">
+        <h5>Tipo de servicio</h5>
+        <p>{{ service.service_type.value }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5>Descripción</h5>
+        <p>{{ service.description }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5>Palabras clave</h5>
+
+        {% for keyword in service.keywords.split(',') %}
+          <a href="#" class="keyword-link">{{ keyword }}</a>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <h5>Estado</h5>
+        {% if service.enable %}
+          <i class="bi bi-check-circle-fill text-success"></i> Habilitado
+        {% else %}
+          <i class="bi bi-x-circle-fill text-danger"></i> Deshabilitado
+        {% endif %}
+      </div>
+      <a href="{{ url_for('services.edit', name=service.name) }}" class="btn btn-outline-success" role="button">Editar</a>
+
+      {% if "services_destroy" in g.current_permissions %}
+        <a href="{{ url_for('services.destroy', name=service.name) }}" class="btn btn-outline-danger" role="button" onclick="return confirm('¿Está seguro que desea eliminar el servicio {{ service.name }}?')">Eliminar</a>
+      {% endif %}
+    </div>
+  </article>
+{% endblock %}

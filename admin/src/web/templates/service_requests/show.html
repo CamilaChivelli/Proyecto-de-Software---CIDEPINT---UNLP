@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3 d-flex">
+    <h1><i class="bi bi-file-earmark-text"></i> Solicitud de servicio</h1>
+  </header>
+
+  <article class="card mb-3">
+    <section class="card-header">
+      <h3><i class="bi bi-info-circle-fill"></i> Información del cliente</h3>
+    </section>
+
+    <section class="card-body">
+      {% if request.user %}
+        <div class="mb-3">
+          <h5><i class="bi bi-person-fill"></i> Apellido y nombre</h5>
+          <p>{{ request.user.full_name() }}</p>
+        </div>
+
+        <div class="mb-3">
+          <h5><i class="bi bi-envelope-fill"></i> Email</h5>
+          <a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a>
+        </div>
+
+        <div class="mb-3">
+          <h5>Estado</h5>
+          <p>
+            {% if request.user.active %}
+              <i class="bi bi-check-circle-fill text-success"></i> Activo
+            {% else %}
+              <i class="bi bi-x-circle-fill text-danger"></i> Inactivo
+            {% endif %}
+          </p>
+        </div>
+      {% else %}
+        <div class="mb-3">
+          <h5><i class="bi bi-trash"> </i>Usuario no disponible</i></h5>
+          <p>El usuario no está disponible o ha sido eliminado</p>
+        </div>
+      {% endif %}
+    </section>
+  </article>
+
+  <article class="card mb-3">
+    <section class="card-header">
+      <h3><i class="bi bi-info-circle-fill"></i> Información de la solicitud de servicio</h3>
+    </section>
+
+    <section class="card-body">
+      {% if request.service %}
+        <div class="mb-3">
+          <h5>Servicio</h5>
+          <p>{{ request.service.name }}</p>
+        </div>
+
+        <div class="mb-3">
+          <h5>Tipo de servicio</h5>
+          <p>{{ request.service.service_type.value }}</p>
+        </div>
+      {% else %}
+        <div class="mb-3">
+          <h5><i class="bi bi-trash"></i> Servicio no disponible</h5>
+          <p>El servicio no está disponible o ha sido eliminado</p>
+        </div>
+      {% endif %}
+
+      <div class="mb-3">
+        <h5>Estado</h5>
+        <p>{{ request.status.value }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-calendar"></i> Última fecha de actualización</h5>
+        <p>{{ request.updated_at.strftime('%d-%m-%Y (%H:%Mhs)') }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-chat-dots-fill"></i> Observaciones del cliente</h5>
+
+        {% if request.user_observation == "" %}
+          <p readonly>No realizó ningun comentario</p>
+        {% else %}
+          <p readonly>{{ request.user_observation }}</p>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-chat-dots-fill"></i> Observaciones de la institución</h5>
+
+        {% if request.institution_observation == "" %}
+          <p readonly>No realizó ningun comentario</p>
+        {% else %}
+          <p readonly>{{ request.institution_observation }}</p>
+        {% endif %}
+      </div>
+
+      {% if request.file_path %}
+        <div class="mb-3">
+          <h5>Archivo Adjunto <i class="bi bi-file-earmark-arrow-down"></i></h5>
+          <a href="/get_attachment/{{ request.file_path }}" download>
+            <button class="btn btn-primary">Descargar Archivo</button>
+          </a>
+        </div>
+      {% endif %}
+
+      <a href="{{ url_for('service_requests.edit', id=request.id) }}" class="btn btn-outline-success" role="button">Editar</a>
+
+      {% if "service_requests_destroy" in g.current_permissions %}
+        <a href="{{ url_for('service_requests.destroy', id=request.id) }}" class="btn btn-outline-danger" role="button" onclick="return confirm('¿Está seguro que desea eliminar la solicitud?')">Eliminar</a>
+      {% endif %}
+    </section>
+  </article>
+
+{% endblock %}

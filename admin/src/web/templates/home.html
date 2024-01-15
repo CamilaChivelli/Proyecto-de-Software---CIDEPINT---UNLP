@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block content %}
+  {% if g.current_user %}
+    {% if g.current_institution %}
+      <h1 style="text-align: center;">Bienvenido a {{g.current_institution.name}}</h1>
+      <div style="text-align: center;">
+        <span>Usted tiene el rol de </span>
+        <span style="color: red;">{{g.current_role.name}}</span>
+        <span> en esta institucion</span>
+      </div>
+    {% else %}
+      <h1 style="text-align: center;">Bienvenido a CIDEPINT</h1>
+      {% if g.current_role.id != 1 %}
+      <p style="text-align: center;">Usted todavia no tiene asignado ningun rol a ninguna institucion</p>
+      {% else %}
+      <div style="text-align: center;">
+        <span>Usted tiene el rol de </span>
+        <span style="color: red;">super-administrador</span>
+      </div>
+      {% endif %}
+     {% endif %}
+  {% else %}
+    <h1 style="text-align: center;">Bienvenido a CIDEPINT</h1>
+    <p style="text-align: center;">Inicie sesión para acceder a nuestros servicios</p>
+  {% endif %}
+{% endblock %}

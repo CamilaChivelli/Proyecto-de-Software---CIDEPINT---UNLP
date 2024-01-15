@@ -1,0 +1,67 @@
+/* Estilos para la sección de contenido principal */
+.main-content {
+    margin: 20px;
+  }
+
+.portal-logo {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.portal-description {
+  line-height: 1.6;
+  color: #333; /* Color del texto principal */
+}
+
+/* Estilos adicionales para resaltar el texto */
+.portal-description strong {
+  font-weight: bold; /* Hace que el texto en negrita sea más destacado */
+  color: #0066cc; /* Cambia el color del texto en negrita */
+}
+
+.portal-description em {
+  font-style: italic; /* Aplica estilo itálico al texto enfatizado */
+  color: #e44d26; /* Cambia el color del texto enfatizado */
+}
+
+.portal-description p {
+  margin-bottom: 15px; /* Añade espacio entre párrafos */
+}
+
+/* Estilos para los encabezados */
+.portal-description h2 {
+  color: #333; /* Color del encabezado */
+  border-bottom: 2px solid #A2C579; /* Línea de borde inferior */
+  padding-bottom: 5px; /* Espaciado inferior */
+  margin-top: 20px; /* Espaciado superior */
+}
+
+#map {
+  height: 500px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .main-content {
+    margin: 10px;
+  }
+
+  .portal-description {
+    font-size: 14px; /* Ajusta el tamaño de fuente para pantallas más pequeñas */
+  }
+
+  .portal-description h2 {
+    font-size: 1.5em; /* Ajusta el tamaño de fuente del encabezado para pantallas más pequeñas */
+  }
+}
+
+@media (max-width: 576px) {
+  .portal-description {
+    font-size: 12px; /* Ajusta el tamaño de fuente para pantallas aún más pequeñas */
+  }
+
+  .portal-description h2 {
+    font-size: 1.2em; /* Ajusta el tamaño de fuente del encabezado para pantallas aún más pequeñas */
+  }
+}

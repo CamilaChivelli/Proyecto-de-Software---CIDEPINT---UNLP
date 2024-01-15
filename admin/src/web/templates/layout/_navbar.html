@@ -1,0 +1,86 @@
+<nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="CIDEPINT logo" class="logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Logged in -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          {% if g.current_user %}
+            {% if g.current_institution %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{g.current_institution.name}}
+                </a>
+                <ul class="dropdown-menu">
+                  <form method="POST" action="{{ url_for('auth.change_current_institution_variable_in_global') }}">
+                    {{ g.form.csrf_token }}
+                    {% for row in g.user_rows_in_userInstitutionRole %}
+                      <li>
+                        <button type="submit" class="dropdown-item" name="selected_institution" value="{{ row.institution.id }}">
+                          {{ row.institution.name }}
+                        </button>
+                      </li>
+                    {% endfor %}
+                </form>
+                </ul>
+              </li>
+            {% endif %}
+
+            {% if "institutions_index" in g.current_permissions %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('institutions.index') }}"><i class="bi bi-building"></i> Instituciones</a>
+              </li>
+            {% endif %}
+
+            {% if "services_index" in g.current_permissions %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('services.index') }}"><i class="bi bi-stack"></i> Servicios</a>
+              </li>
+            {% endif %}
+
+            {% if "service_requests_index" in g.current_permissions %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('service_requests.index') }}"><i class="bi bi-file-earmark-text"></i> Solicitudes de servicios</a>
+              </li>
+            {% endif %}
+
+            {% if "users_index" in g.current_permissions %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('users.index') }}"><i class="bi bi-person-fill"></i> Usuarios</a>
+              </li>
+            {% else %}
+              {% if "institution_users_index" in g.current_permissions %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('institution_users.index', institution_id=g.current_institution.id) }}"><i class="bi bi-person-fill"></i> Usuarios</a>
+                </li>
+              {% endif %}
+            {% endif %}
+
+            {% if "configurations_show" in g.current_permissions %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('configurations.show') }}"><i class="bi bi-gear-fill"></i> Configuración</a>
+              </li>
+            {% endif %}
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ g.current_user.email }}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" onclick="return confirm('Estas seguro que deseas cerrar sesión?')">Logout</a></li>
+              </ul>
+            </li>
+
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href={{ url_for('auth.login') }}><i class="bi bi-box-arrow-in-right"></i> Iniciar sesion</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+  </div>
+</nav>

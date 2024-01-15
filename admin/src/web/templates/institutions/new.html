@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3 d-flex">
+    <h1><i class="bi bi-building"></i> Nueva institución</h1>
+  </header>
+
+  <article class="card mb-4">
+    <div class="card-body">
+      {% for field, errors in form.errors.items() %}
+        <div class="alert alert-danger" role="alert">
+          {{ form[field].label }}: {{ ", ".join(errors) }}
+        </div>
+      {% endfor %}
+
+      <form method="POST" action={{ url_for('institutions.create') }}>
+        {{ form.csrf_token }}
+
+        <div class="mb-3">
+          {{ form.name.label(class="form-label") }}
+          {{ form.name(class="form-control", autofocus=True) }}
+          <div class="form-text">Debe ser único.</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.info.label(class="form-label") }} <small class="text-muted">(opcional)</small>
+          {{ form.info(class="form-control") }}
+          <div class="form-text">Información adicional.</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.address.label(class="form-label") }} <small class="text-muted">(opcional)</small>
+          {{ form.address(id="address_input", class="form-control") }}
+          <div id="map" style="height: 300px;"></div>
+          <div class="form-text">Arrastre el cursor en el mapa y luego haga click para seleccionar la ubicación de la institución.</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.location.label(class="form-label") }} <small class="text-muted">(opcional)</small>
+          {{ form.location(class="form-control") }}
+          <div class="form-text">Detalles de la direccion (numero, departamento, etc)</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.web.label(class="form-label") }}
+          {{ form.web(class="form-control") }}
+          <div class="form-text">Sitio web de la institución. Debe ser único.</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.keywords.label(class="form-label") }} <small class="text-muted">(opcional)</small>
+          {{ form.keywords(class="form-control") }}
+          <div class="form-text">Palabras clave relacionadas con la institución.</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.customer_service_hours.label(class="form-label") }} <small class="text-muted">(opcional)</small>
+          {{ form.customer_service_hours(class="form-control") }}
+          <div class="form-text">Horario de atención al cliente.</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.contact_info.label(class="form-label") }}
+          {{ form.contact_info(class="form-control") }}
+          <div class="form-text">Información de contacto de la institución. Debe ser único.</div>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-form">Crear institución</button>
+        <a href={{ url_for('institutions.index') }} class="btn btn-outline-dark btn-form" role="button">Cancelar</a>
+      </form>
+    </div>
+  </article>
+{% endblock %}
+
+{% block script %}
+<script>
+  var map = L.map('map').setView([-34.9214500,-57.9545300], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  var marker = L.marker([0, 0], {
+    draggable: true  // Permite arrastrar el marcador
+  }).addTo(map);
+
+  marker.on('dragend', function (event) {
+    var marker = event.target;
+    var position = marker.getLatLng();
+    updateCoordinates(position.lat, position.lng);
+  });
+
+  map.on('click', function (e) {
+    marker.setLatLng(e.latlng);
+    var position = marker.getLatLng();
+    updateCoordinates(position.lat, position.lng);
+  });
+
+  function updateCoordinates(lat, lng) {
+    var address = document.getElementById("address_input");
+    address.value = lat + ',' + lng;
+    }
+</script>
+{% endblock %}

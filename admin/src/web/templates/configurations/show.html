@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <header class="mb-3">
+    <div class="d-flex justify-content-between">
+      <h1><i class="bi bi-gear-fill"></i> Configuración</h1>
+      <a href="{{ url_for('configurations.edit') }}" class="btn btn-primary" role="button"><i class="bi bi-pencil"></i> Editar</i></a>
+    </div>
+  </header>
+
+  <article class="card mb-4">
+    <div class="card-header">
+      <h3><i class="bi bi-info-circle-fill"></i> Información de contacto</h3>
+    </div>
+
+    <div class="card-body">
+      <div class="mb-3">
+        <h5><i class="bi bi-envelope-fill"></i> {{ form.email.label() }}</h5>
+        <p>{{ configuration.email }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-telephone-fill"></i> {{ form.phone_number.label() }}</h5>
+        <p>{{ configuration.phone_number }}</p>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-globe"></i> {{ form.web.label() }}</h5>
+        <p><a href="{{ configuration.web }}" target="_blank">{{ configuration.web }}</a></p>
+      </div>
+    </div>
+  </article>
+
+  <article class="card mb-4">
+    <div class="card-header">
+      <h3><i class="bi bi-file-earmark-text"></i> Paginación</h3>
+    </div>
+
+    <div class="card-body">
+      <div class="mb-3">
+        <h5>{{ form.per_page.label() }}</h5>
+        <p>{{ configuration.per_page }}</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="card mb-4">
+    <div class="card-header">
+      <h3><i class="bi bi-tools"></i> Mantenimiento del sitio</h3>
+    </div>
+
+    <div class="card-body">
+      <div class="mb-3">
+        <h5><i class="bi bi-cone-striped"></i> {{ form.is_on_maintenance.label() }}</h5>
+
+        <div class="form-check form-switch fs-4">
+          {{ form.is_on_maintenance(class="form-check-input", checked=configuration.is_on_maintenance, disabled=True) }}
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <h5><i class="bi bi-chat-dots-fill"></i> {{ form.maintenance_message.label() }}</h5>
+        <p>{{ configuration.maintenance_message }}</p>
+      </div>
+    </div>
+  </article>
+{% endblock %}
